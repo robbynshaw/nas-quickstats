@@ -3,8 +3,9 @@ var http = require('http');
 
 module.exports = (function(){
     var nas = {};
-    var key = 'C47BE18E-7811-30AD-BF3D-2D93716356CE';
     var host = 'quickstats.nass.usda.gov';
+    
+    nas.key = '';
     
     nas.type = {
         get: 0,
@@ -12,26 +13,10 @@ module.exports = (function(){
         counts: 2
     };
 
-    nas.newQuery = function(){
-        return {
-            key: key,
-            format: 'JSON'
-        };
-    };
-
-    nas.testYield = function(){
-        var q = nas.yieldQuery();
-        var r = nas.request(nas.type.get, q, function(data){
-            var d = JSON.parse(data);
-            var all = d.data;
-            console.log(all[0]);
-            for (var i=0; i<all.length; i++){
-                var yearly = all[i];
-                console.log('YEAR: ' + yearly.year);
-                console.log('\t' + yearly.Value + ' ' + yearly.unit_desc);
-            }
-        });
-        r.send();
+    nas.query = function(options){
+        options.key = nas.key;
+        options.format = 'JSON';
+        return options;
     };
 
     var genCallback = function(callback){
@@ -51,26 +36,6 @@ module.exports = (function(){
         };
         return f;
     };
-
-    nas.yieldQuery = function(commodity){
-        commodity = 'BEETS';
-        var q = nas.newQuery();
-        q.commodity_desc = commodity;
-        q.statisticcat_desc = 'YIELD';
-        return q;
-    };
-
-    nas.request = function(type, query, callback){
-        var options = createOptions(type, query);
-        var newCallback = genCallback(callback);
-        return {
-            options: options,
-            send: function(){
-                http.request(options, newCallback).end();
-            }
-        };
-    };
-
 
     function createOptions(type, query){
         var apiType = '';
@@ -93,6 +58,17 @@ module.exports = (function(){
             path: apiType + '?' + qs.stringify(query)
         };
     }
+    
+    nas.request = function(type, query, callback){
+        var options = createOptions(type, query);
+        var newCallback = genCallback(callback);
+        return {
+            options: options,
+            send: function(){
+                http.request(options, newCallback).end();
+            }
+        };
+    };
 
     return nas;
 })();
