@@ -9,9 +9,9 @@ API
 ------------------
 1.  Add the library into your file
 
-        ```javascript
-        var nas = require('nas-quickstats');
-        ```
+```javascript
+var nas = require('nas-quickstats');
+```
 
 1.  Declare your key that you obtained from the
     [nas site](http://quickstats.nass.usda.gov/api 'nas api').
