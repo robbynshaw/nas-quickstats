@@ -1,5 +1,5 @@
 var qs = require('querystring');
-var http = require('http');
+var http = require('https');
 
 module.exports = (function(){
     var nas = {};
